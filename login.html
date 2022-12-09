@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Sign up / Login Form</title>
+  <link rel="stylesheet" href="css/login.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Slide Navbar</title>
+	<link rel="stylesheet" type="text/css" href="slide navbar style.css">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+	<div class="main">  	
+		<input type="checkbox" id="chk" aria-hidden="true">
+
+			<div class="signup">
+				<form id="register-form">
+					<label for="chk" aria-hidden="true">Sign up</label>
+					<input type="text" id="register-name" name="txt" placeholder="Name" required>
+					<input type="email" id="register-email" name="email" placeholder="Email" required>
+					<input type="password" id="register-password" name="pswd" placeholder="Password" required>
+					<!-- <button type="submit">Sign up</button> -->
+          <button type="submit" id="register-btn"><div id="register-text">Sign Up</div> <div class="loader"></div></button>
+				</form>
+			</div>
+
+			<div class="login">
+				<form id="login-form">
+					<label for="chk" aria-hidden="true">Login</label>
+					<input type="email" id="login-email" name="email" placeholder="Email" required>
+					<input type="password" id="login-password" name="pswd" placeholder="Password" required="">
+					<button type="submit" id="login-btn"><div id="login-text">Login</div> <div class="loader"></div></button>
+				</form>
+			</div>
+    </div>
+    <div id="snackbar"></div>
+
+
+  <script>
+    // Signup declarations
+    let registerForm = document.getElementById("register-form")
+    let registerName = document.getElementById("register-name")
+    let registerPassword = document.getElementById("register-password")
+    let registerEmail = document.getElementById("register-email")
+    let registerText = document.getElementById("register-text")
+
+    // Login declarations
+    let loginForm = document.getElementById("login-form")
+    let loginEmail = document.getElementById("login-email")
+    let loginPassword = document.getElementById("login-password")
+    let loginText = document.getElementById("login-text")
+    let loader = document.getElementsByClassName("loader")
+
+    let checkbox = document.getElementById("chk")
+
+    // console.log("THIS IS THE CHECKBOX VALUE", checkbox.checked)
+
+
+    function toast(message = "Error", action) {
+      let snackbar = document.getElementById('snackbar')
+      snackbar.innerHTML = message
+      snackbar.className = "show"
+      if(action === "login"){
+        loader[1].style.display = "none"
+        loginText.style.display = 'block'
+      } else {
+        loader[0].style.display = "none"
+        registerText.style.display = 'block'
+      }
+      setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 3000);
+    }
+
+
+    function signup(e){
+      e.preventDefault()
+      registerText.style.display = "none"
+      loader[0].style.display = "block"
+      const data = {
+        name: registerName.value,
+        email: registerEmail.value,
+        password: registerPassword.value
+      }
+      
+      fetch('http://127.0.0.1:8000/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if(data.status === "failure"){
+                toast(data.message, "signup")
+            }
+            else {
+              console.log('Success:', data);
+              loginEmail.value = registerEmail.value
+              registerName.value = ""
+              registerEmail.value = ""
+              registerPassword.value = ""
+              checkbox.checked = true
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+    }
+
+    function login(e){
+      e.preventDefault()
+      loginText.style.display = 'none'
+      loader[1].style.display = "block"
+      const data = {
+        email: loginEmail.value,
+        password: loginPassword.value
+      }
+      
+      fetch('http://127.0.0.1:8000/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if(data.status === "failure"){
+                toast(data.message, "login")
+            }
+            else{
+              console.log('Success:', data);
+              loginEmail.value = ""
+              loginPassword.value = ""
+              localStorage.setItem('token', data.access_token)
+              alert(data.message)
+              window.location.href = "/"
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+    }
+
+
+    registerForm.addEventListener('submit', signup)
+    loginForm.addEventListener('submit', login)
+  </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>

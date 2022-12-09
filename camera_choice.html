@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/camera_choice.css">
+    <title>Camera Choice</title>
+    <script>
+      let jwtToken = localStorage.getItem("token")
+      if (jwtToken === null) {
+        window.location.href = "/login.html"
+      }
+    </script>
+</head>
+<body>
+    <div class="containerw wrapper-div">
+        <div class="row">
+          <div class="col-lg-8 offset-lg-2">
+            <h6 style="padding-top: 2em; padding-buttom: -1em">
+              <a href="/">Back to Homepage</a>
+            </h6>
+            <h3 class="mt-5">
+              Select Camera of Choice
+            </h3>
+            <!-- <img src="" id="frame" width="100%" /> -->
+            <div class="btn-flex">
+                <!-- <h1>Button choice</h1> -->
+                <button id="webcam-btn" class="choice-btns"><div id="webcam-text">Webcam</div> <div class="loader"></div></button>
+                <button id="external-btn" class="choice-btns"><div id="external-text">External</div> <div class="loader"></div></button>
+            </div>
+            <div class="form" id="form">
+              <form action="" id="form-element">
+                <!-- <label for="url">Camera Url</label> -->
+                <input type="text" id="url" name="url" placeholder="Camera Url" required>
+                <button type="submit" class="submit">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="snackbar"></div>
+
+      <script>
+        let webcamBtn = document.getElementById("webcam-btn")
+        let externalBtn = document.getElementById("external-btn")
+        let formDiv = document.getElementById("form")
+        let form = document.getElementById("form-element")
+        let urlInput = document.getElementById('url')
+        let webcamText = document.getElementById('webcam-text')
+        let externalText = document.getElementById("external-text")
+        let loader = document.getElementsByClassName('loader')
+        let token = localStorage.getItem("token")
+
+
+        // toast function
+        function toast(message = "Error", action) {
+            let snackbar = document.getElementById('snackbar')
+            snackbar.innerHTML = message
+            snackbar.className = "show"
+            if(action === "webcam"){
+              webcamText.style.display = 'block'
+              loader[0].style.display = 'none'
+            } else {
+              externalText.style.display = 'block'
+              loader[1].style.display = 'none'
+            }
+            setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 3000);
+      }
+        
+
+        // Making the url form visible 
+        function makeFormVisible(){
+          formDiv.style.display = "block"
+          externalBtn.style.display = 'none'
+          loader[0].style.display = 'none'
+        }
+
+        // Making the url form visible 
+        function makeFormInvisible(){
+          formDiv.style.display = "none"
+        }
+
+        function submitUrl(e){
+          e.preventDefault()
+          console.log(urlInput.value)
+          fetch('http://127.0.0.1:8000/camera_id', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            camera_id: urlInput.value
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('Success:', data);
+            // makeFormInvisible()
+            window.location.href = "/detection.html";
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+        }
+
+        function webcamClick(){
+          console.log("Webcam button clicked...")
+          webcamText.style.display = 'none'
+          loader[0].style.display = 'block'
+          fetch('http://127.0.0.1:8000/camera', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            choice: "webcam"
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if(data.status === "failure"){
+                toast(data.message, "webcam")
+            } else {
+              console.log('Success:', data);
+              window.location.href = "/detection.html";
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+        }
+
+        function externalClick(){
+          console.log("External button clicked...")
+          externalText.style.display = 'none'
+          loader[1].style.display = 'block'
+          fetch('http://127.0.0.1:8000/camera', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            choice: "external"
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if(data.status === "failure"){
+                toast(data.message, "external")
+            } else {
+              console.log('Success:', data);
+              makeFormVisible()
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+        }
+
+        webcamBtn.addEventListener('click', webcamClick)
+        externalBtn.addEventListener('click', externalClick)
+        form.addEventListener('submit', submitUrl)
+      </script>
+</body>
+</html>

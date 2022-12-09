@@ -1,0 +1,208 @@
+body {
+    background-color: #4b0082;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  h3 {
+    color: white;
+  }
+
+  .wrapper-div {
+    width: 80%;
+  }
+  
+  .btn-flex {
+    /* background-color: #0062cc; */
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  
+  #webcam-btn {
+    background-color: #1b9cfc;
+    animation: leftFlow 5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #external-btn {
+    background-color: #fc427b;
+    animation: rightFlow 5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  
+  .choice-btns {
+    /* width: 7em;
+    height: 3.5em;
+    border: none;
+    font-size: 1.2em; */
+    cursor: pointer;
+    border: 2px solid currentColor;
+    border-radius: 3rem;
+    color: #fff;
+    font-family: roboto;
+    font-size: 4rem;
+    font-weight: 100;
+    overflow: hidden;
+    padding: 1rem 2rem;
+    position: relative;
+    text-decoration: none;
+    transition: 0.5s transform ease-in-out;
+    will-change: transform;
+    z-index: 0;
+    /* transform: rotate3d(-0.3, 1, 0, 30deg); */
+    
+  }
+
+  /* animation */
+  @-webkit-keyframes leftFlow {
+    0%   { transform: translateX(-500px); }
+        50%  { transform: translateX(0); }
+        70% { transform: translateX(-200px); }
+        100%{
+        }
+  }
+
+  @-webkit-keyframes rightFlow {
+    0%   { transform: translateX(500px); }
+        50%  { transform: translateX(0); }
+        70% { transform: translateX(200px); }
+        100%{
+        }
+  }
+
+  
+  
+  .choice-btns::after {
+    background-color: #ff0;
+    border-radius: 3rem;
+    content: '';
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-100%, 0) rotate(10deg);
+    transform-origin: top left;
+    transition: 0.2s transform ease-out;
+    will-change: transform;
+    z-index: -1;
+  }
+  .choice-btns:hover::after {
+    transform: translate(0, 0);
+  }
+  .choice-btns:hover {
+    border: 2px solid transparent;
+    color: #4b0082;
+    transform: scale(1.05);
+    will-change: transform;
+  }
+
+.form {
+    margin-top: 50px;
+    display: none;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+input {
+    width: 30em;
+    height: 3.2em;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+}
+
+form > .submit {
+    margin: 2em;
+    width: 7em;
+    height: 2.5em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgb(255, 255, 0);
+}
+
+form > .submit:hover {
+  border: 2px solid transparent;
+  color: #4b0082;
+  transform: scale(1.1);
+  transition: 0.6s;
+  will-change: transform;
+  background-color: rgba(255, 255, 0, 0.8)
+}
+
+.loader {
+  display: none;
+  border: 2px solid #f3f3f3; /* Light grey */
+  border-top: 2px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}

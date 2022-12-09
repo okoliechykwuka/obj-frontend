@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+
+    <title>
+      <!-- Live Streaming {% if dtype == "object" %} Object {% else %} Emotion {%
+      endif %} Detection -->
+      Detection
+    </title>
+    <script>
+      let token = localStorage.getItem("token")
+      if (token === null) {
+        window.location.href = "/login.html"
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+          <h6 style="padding-top: 2em; padding-buttom: -1em">
+            <a href="/">Back to Homepage</a>
+          </h6>
+          <h3 class="mt-5">
+            <!-- Live Streaming {% if dtype == "object" %} Object {% else %} Emotion
+            {% endif %} Detection -->
+            Live Segmentation
+          </h3>
+          <!-- {% if dtype == "object" %} -->
+          <img src="" id="frame" width="100%" />
+          <!-- <video autoplay></video> -->
+          <!-- {% else %} -->
+          <!-- <img src="{{ url_for('video_feed_emotion') }}" width="100%" /> -->
+          <!-- {% endif %} -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+    
+      // let ws = new WebSocket("http://192.168.8.101:8080/video");
+
+      // INBOUND STREAMING SECTION
+      let ws = new WebSocket("ws://localhost:8000/ws");
+      let image = document.getElementById("frame");
+      image.onload = function(){
+          URL.revokeObjectURL(this.src); // release the blob URL once the image is loaded
+      } 
+      ws.onmessage = function(event) {
+          image.src = URL.createObjectURL(event.data);
+      };
+      ws.onopen = () => {
+            console.log(`Connected`);
+            ws.send(localStorage.getItem('token'));
+        }
+
+      // OUTBOUND STREAMING SECTION
+      // get video dom element
+      // const video = document.querySelector('video');
+        
+      //   // request access to webcam
+      //   navigator.mediaDevices.getUserMedia({video: {width: 426, height: 240}}).then((stream) => video.srcObject = stream);
+        
+      //   // returns a frame encoded in base64
+      //   const getFrame = () => {
+      //       const canvas = document.createElement('canvas');
+      //       canvas.width = video.videoWidth;
+      //       canvas.height = video.videoHeight;
+      //       canvas.getContext('2d').drawImage(video, 0, 0);
+      //       let type = 'image/png'
+      //       const data = canvas.toDataURL(type);
+      //       // trying this out. By me, Joshua
+      //       // console.log({data});
+      //       const ws_data = {
+      //       'frame': {
+      //           'image': data.replace('data:' + type + ';base64,', ''), //split off junk,
+      //           'id': frame
+      //       },
+      //   };
+      //       return data;
+      //   }
+
+      //   const WS_URL = 'ws://localhost:8000/ws';
+      //   const FPS = 10;
+      //   const ws = new WebSocket(WS_URL);
+      //   ws.onopen = () => {
+      //       console.log(`Connected to ${WS_URL}`);
+      //       setInterval(() => {
+      //           ws.send(getFrame());
+      //           // ws.send("Hey Server");
+      //       }, 1000 / FPS);
+      //   }
+      //   ws.onmessage = (event) => {
+      //     console.log(event.data);
+      //   }
+
+  </script>
+  </body>
+</html>
